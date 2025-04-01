@@ -7,36 +7,34 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
-        body { background-color: black; color: white; font-family: Verdana, sans-serif; text-align: center; }
-        h1 { font-size: 40px; margin: 20px 0; }
-        #map { height: 600px; width: 1100px; margin: auto; }
+        body { background-color: black; color: white; font-family: Verdana;}
+        #map { height: 600px; width: 900px; margin: auto; }
+        .radio-group label {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 400;
+        }
         .control-box { 
-        margin: 4px; 
-        padding: 4px; 
-        background: black; 
-        color: white; 
-        display: inline-block; 
-        text-align: left; 
-        font-size: 20px;
-        font-weight: bold;
-    }
-    select { 
-        background: black; 
-        color: white; 
-        border: 1px solid white; 
-        font-size: 20px;
-    }
-    .radio-group label {
-        display: inline-block;
-        font-size: 25px;
-    }
-    .control-box label { display: inline-block; width: auto; margin-right: 5px; }
-    .control-box select { display: inline-block; width: auto; }
+            margin: 4px; 
+            padding: 4px; 
+            background: black; 
+            color: white; 
+            display: inline-block; 
+            text-align: left; 
+            font-size: 15px;
+        }
+        .control-box label { display: inline-block; width: auto; margin-right: 5px; }
+        .control-box select { display: inline-block; width: auto; }
+        select { 
+            background: black; 
+            color: white; 
+            border: 1px solid white; 
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
-    <h1>Meteogramme</h1>
-    <div class="control-box">
+    <div class="control-box" style="margin-bottom: 20px;">
         <div id="model-select" class="radio-group">
             <label><input type="radio" name="model" value="EURO1k" checked> EURO1k</label>
             <label><input type="radio" name="model" value="SWISS1k"> SWISS1k</label>
@@ -44,19 +42,18 @@
             <label><input type="radio" name="model" value="AIFS"> AIFS</label>
             <label><input type="radio" name="model" value="GFS"> GFS</label>
         <br>
-        <label for="time-select">Lauf: </label>
-        <select id="time-select"></select>
+        <select id="time-select" style="margin-top: 10px;"></select>
         <br>
-        <label for="new-tab-false"><span style="font-size: 0.6em;">Neuer Tab:</span></label>
-        <input type="radio" id="new-tab-false" name="new-tab" value="false" checked>
-        <label for="new-tab-false"><span style="font-size: 0.6em;">Nein</span></label>
+        <label for="new-tab-false" style="margin-top: 10px;"><span style="font-size: 0.7em;">Neuer Tab:</span></label>
+        <input type="radio" id="new-tab-false" name="new-tab" value="false" checked style="margin-top: 10px;">
+        <label for="new-tab-false"><span style="font-size: 0.7em;">Nein</span></label>
         <input type="radio" id="new-tab-true" name="new-tab" value="true">
-        <label for="new-tab-true"><span style="font-size: 0.6em;">Ja</span></label>
+        <label for="new-tab-true"><span style="font-size: 0.7em;">Ja</span></label>
     </div>
     <div id="map"></div>
 
     <script>
-        const map = L.map('map').setView([46.8, 8.3], 8);
+        const map = L.map('map').setView([46.8, 8.4], 8);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
