@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
-        body { background-color: black; color: white; font-family: Verdana;}
+        body { background-color: #2C3E50; color: #ADD8E6; font-family: Verdana;}
         #map { height: 600px; width: 900px; margin: auto; }
         .radio-group label {
             display: inline-block;
@@ -17,8 +17,6 @@
         .control-box { 
             margin: 4px; 
             padding: 4px; 
-            background: black; 
-            color: white; 
             display: inline-block; 
             text-align: left; 
             font-size: 15px;
@@ -26,9 +24,9 @@
         .control-box label { display: inline-block; width: auto; margin-right: 5px; }
         .control-box select { display: inline-block; width: auto; }
         select { 
-            background: black; 
-            color: white; 
-            border: 1px solid white; 
+            background: #282A36; 
+            color: #DCDCDC; 
+            border: 0px; 
             font-size: 15px;
         }
     </style>
@@ -43,12 +41,12 @@
             <label><input type="radio" name="model" value="GFS"> GFS</label>
         <br>
         <select id="time-select" style="margin-top: 10px;"></select>
-        <br>
-        <label for="new-tab-false" style="margin-top: 10px;"><span style="font-size: 0.7em;">Neuer Tab:</span></label>
-        <input type="radio" id="new-tab-false" name="new-tab" value="false" checked style="margin-top: 10px;">
-        <label for="new-tab-false"><span style="font-size: 0.7em;">Nein</span></label>
-        <input type="radio" id="new-tab-true" name="new-tab" value="true">
-        <label for="new-tab-true"><span style="font-size: 0.7em;">Ja</span></label>
+    </div>
+    <div class="control-box" style="margin-top: 5px;">
+        <button id="new-tab-button" style="padding: 5px 10px; background-color: #2C3E50; color: #ADD8E6; 
+            border: none; border-radius: 5px; cursor: pointer; font-size: 11px;">
+            Neuer Tab: AUS
+        </button>
     </div>
     <div id="map"></div>
 
@@ -70,7 +68,6 @@
             "Poschiavo": [46.32, 10.06], "Davos": [46.81, 9.84], "Ambri": [46.51, 8.70], "Zermatt": [46.02, 7.75]
         };
 
-        // Define valid cities for each model
         const validCities = {
             "EURO1k": Object.keys(cityCoords),
             "SWISS1k": ["Bern", "Zuerich", "Basel", "Luzern", "Geneve", "Lugano", "StGallen", "Chur", "Sion", 'Thun',
@@ -84,6 +81,22 @@
 
         document.querySelectorAll('input[name="model"]').forEach(radio => {
             radio.addEventListener('change', updateMarkers);
+        });
+
+        const newTabButton = document.getElementById('new-tab-button');
+        let openInNewTab = false;
+
+        newTabButton.addEventListener('click', () => {
+            openInNewTab = !openInNewTab;
+            if (openInNewTab) {
+                newTabButton.style.backgroundColor = '#2196F3';
+                newTabButton.style.color = '#ADD8E6';
+                newTabButton.textContent = 'Neuer Tab: AN';
+            } else {
+                newTabButton.style.backgroundColor = '#2C3E50';
+                newTabButton.style.color = '#ADD8E6';
+                newTabButton.textContent = 'Neuer Tab: AUS';
+            }
         });
         
         function updateMarkers() {
@@ -111,12 +124,10 @@
                                 link = `https://met.metweb.ch/modelviewer/plots/${modelValue}/${timeValue}/${timeValue}_${modelValue}_CH_Meteogramm_${city}_00000.png`;
                             }
 
-                            const openInNewTab = document.querySelector('input[name="new-tab"]:checked').value === "true";
-
                             if (openInNewTab) {
-                                window.open(link, '_blank'); // Open in a new tab
+                                window.open(link, '_blank');
                             } else {
-                                window.location.href = link; // Open in the same tab
+                                window.location.href = link;
                             }
                         });
                     markers.push(marker);
