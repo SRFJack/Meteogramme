@@ -64,7 +64,6 @@
             display: block;
         }
 
-        /* gallery container defaults */
         #gallery {
             display: grid;
             gap: 8px;
@@ -106,14 +105,12 @@
 const map = L.map('map').setView([46.8, 8.4], 8);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-// Standard-Scroll-Zoom deaktivieren
 map.scrollWheelZoom.disable();
 
-// Benutzerdefiniertes Scroll-Verhalten
 map.on('wheel', function (e) {
     if (e.originalEvent.ctrlKey) {
         map.scrollWheelZoom.enable();
-        setTimeout(() => map.scrollWheelZoom.disable(), 50); // kurz erlauben
+        setTimeout(() => map.scrollWheelZoom.disable(), 50);
     } else {
         const msg = document.getElementById('ctrl-zoom-msg');
         if (msg) {
@@ -157,7 +154,6 @@ function updateMarkers() {
         const marker = L.marker([lat, lon]).addTo(map)
             .bindTooltip(city)
             .on('click', function() {
-                // WICHTIG: Modell erst hier erneut auslesen
                 const selectedModel = document.querySelector('input[name="model"]:checked').value;
                 const timeValue = document.getElementById('time-select').value;
 
@@ -178,7 +174,6 @@ function updateMarkers() {
     });
 }
 
-// events
 document.querySelectorAll('input[name="model"]').forEach(r => r.addEventListener('change', fillTimes));
 document.querySelectorAll('input[name="model"]').forEach(r => r.addEventListener('change', updateMarkers));
 
@@ -247,14 +242,13 @@ function addImageToGallery(url) {
     close.className = "gallery-close";
     close.textContent = "X";
     close.onclick = (e) => {
-        e.stopPropagation(); // verhindert Klick aufs Bild
+        e.stopPropagation();
         item.remove();
     };
 
     const img = document.createElement("img");
     img.src = url;
 
-    // NEU: Bild klickbar machen
     img.addEventListener("click", () => {
         if (openInNewTab) {
             window.open(url, "_blank");
@@ -270,27 +264,22 @@ function addImageToGallery(url) {
     applyGalleryLayout();
 }
 
-// Layout für Galerie anwenden
 function applyGalleryLayout() {
 
     const cols = Number(galleryCols.value);
     const scale = Number(gallerySize.value) / 100;
 
-    // Kartenbreite 900px → Basiswert
     const baseWidth = 900;
 
-    // Breite pro Kachel
     const itemWidth = Math.round((baseWidth / cols) * scale);
 
     galleryDiv.style.gridTemplateColumns =
         `repeat(${cols}, ${itemWidth}px)`;
 
-    // Kachelgrössen anpassen
     document.querySelectorAll(".gallery-item").forEach(item => {
         item.style.width = itemWidth + "px";
     });
 
-    // Bildgrössen anpassen
     document.querySelectorAll(".gallery-item img").forEach(img => {
         img.style.width = itemWidth + "px";
     });
