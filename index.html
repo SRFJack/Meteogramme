@@ -33,6 +33,7 @@
             border: 1px solid #666;
             border-radius: 6px;
             overflow: hidden;
+            background: #111;
         }
 
         .gallery-item img {
@@ -51,6 +52,24 @@
             border-radius: 3px;
             cursor: pointer;
         }
+
+        .gallery-item {
+            position: relative;
+            border: 1px solid #666;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .gallery-item img {
+            width: 100%;
+            display: block;
+        }
+
+        /* gallery container defaults */
+        #gallery {
+            display: grid;
+            gap: 8px;
+            align-items: start;
+        }
     </style>
 </head>
 <body>
@@ -64,9 +83,8 @@
         <label><input type="radio" name="model" value="EURO1k" checked> EURO1k</label>
         <label><input type="radio" name="model" value="ICOND2"> ICOND2</label>
     </div>
-
     <select id="time-select"></select>
-
+    <br>
     <button id="new-tab-button" class="toggle-btn">Neuer Tab: AUS</button>
     <button id="gallery-button" class="toggle-btn">Galerie: AUS</button>
 </div>
@@ -74,12 +92,14 @@
 <div id="map"></div>
 
 <div id="gallery-section" style="display:none; margin-top:15px;">
-    <label for="gallery-cols">Spalten:</label>
+    <label for="gallery-cols">
     <select id="gallery-cols" style="width:60px;">
         <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
     </select>
 
-    <div id="gallery" style="margin-top:10px; display:grid; gap:8px;"></div>
+    <input id="gallery-size" type="range" min="30" max="200" value="100" style="width:200px;">
+
+    <div id="gallery" style="margin-top:5px; display:grid; gap:0px;"></div>
 </div>
 
 <script>
@@ -95,7 +115,6 @@ map.on('wheel', function (e) {
         map.scrollWheelZoom.enable();
         setTimeout(() => map.scrollWheelZoom.disable(), 50); // kurz erlauben
     } else {
-        // Hinweis anzeigen (optional)
         const msg = document.getElementById('ctrl-zoom-msg');
         if (msg) {
             msg.style.opacity = 1;
@@ -159,6 +178,7 @@ function updateMarkers() {
     });
 }
 
+// events
 document.querySelectorAll('input[name="model"]').forEach(r => r.addEventListener('change', fillTimes));
 document.querySelectorAll('input[name="model"]').forEach(r => r.addEventListener('change', updateMarkers));
 
@@ -198,11 +218,13 @@ btn.addEventListener('click', () => {
     btn.textContent = openInNewTab ? 'Neuer Tab: AN' : 'Neuer Tab: AUS';
 });
 
-let galleryActive = false;
 const galleryBtn = document.getElementById("gallery-button");
 const gallerySection = document.getElementById("gallery-section");
 const galleryDiv = document.getElementById("gallery");
 const galleryCols = document.getElementById("gallery-cols");
+const gallerySize = document.getElementById("gallery-size");
+
+let galleryActive = false;
 
 galleryBtn.addEventListener("click", () => {
     galleryActive = !galleryActive;
@@ -210,15 +232,13 @@ galleryBtn.addEventListener("click", () => {
     galleryBtn.textContent = galleryActive ? "Galerie: AN" : "Galerie: AUS";
 
     gallerySection.style.display = galleryActive ? "block" : "none";
+
+    if (galleryActive) applyGalleryLayout();
 });
 
-// Spaltenanzahl ändern
-galleryCols.addEventListener("change", () => {
-    const cols = Number(galleryCols.value);
-    galleryDiv.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-});
+galleryCols.addEventListener("change", applyGalleryLayout);
+gallerySize.addEventListener("input", applyGalleryLayout);
 
-// Hilfsfunktion zum Bild-Einfügen
 function addImageToGallery(url) {
     const item = document.createElement("div");
     item.className = "gallery-item";
@@ -226,14 +246,54 @@ function addImageToGallery(url) {
     const close = document.createElement("div");
     close.className = "gallery-close";
     close.textContent = "X";
-    close.onclick = () => item.remove();
+    close.onclick = (e) => {
+        e.stopPropagation(); // verhindert Klick aufs Bild
+        item.remove();
+    };
 
     const img = document.createElement("img");
     img.src = url;
 
+    // NEU: Bild klickbar machen
+    img.addEventListener("click", () => {
+        if (openInNewTab) {
+            window.open(url, "_blank");
+        } else {
+            window.location.href = url;
+        }
+    });
+
     item.appendChild(close);
     item.appendChild(img);
     galleryDiv.appendChild(item);
+
+    applyGalleryLayout();
+}
+
+// Layout für Galerie anwenden
+function applyGalleryLayout() {
+
+    const cols = Number(galleryCols.value);
+    const scale = Number(gallerySize.value) / 100;
+
+    // Kartenbreite 900px → Basiswert
+    const baseWidth = 900;
+
+    // Breite pro Kachel
+    const itemWidth = Math.round((baseWidth / cols) * scale);
+
+    galleryDiv.style.gridTemplateColumns =
+        `repeat(${cols}, ${itemWidth}px)`;
+
+    // Kachelgrössen anpassen
+    document.querySelectorAll(".gallery-item").forEach(item => {
+        item.style.width = itemWidth + "px";
+    });
+
+    // Bildgrössen anpassen
+    document.querySelectorAll(".gallery-item img").forEach(img => {
+        img.style.width = itemWidth + "px";
+    });
 }
 
 </script>
