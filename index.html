@@ -48,7 +48,7 @@
             background: rgba(0,0,0,0.6);
             color: white;
             padding: 2px 5px;
-            font-size: 12px;
+            font-size: 20px;
             border-radius: 3px;
             cursor: pointer;
         }
@@ -68,6 +68,11 @@
             display: grid;
             gap: 8px;
             align-items: start;
+        }
+
+        #gallery-clear {
+            font-size: 1.2em;
+            padding: 8px 14px;
         }
     </style>
 </head>
@@ -91,14 +96,22 @@
 <div id="map"></div>
 
 <div id="gallery-section" style="display:none; margin-top:15px;">
-    <label for="gallery-cols">
-    <select id="gallery-cols" style="width:60px;">
-        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+
+    <!-- Spaltenzahl -->
+    <label for="gallery-cols" style="margin-right:6px;">Spalten:</label>
+    <select id="gallery-cols" style="width:50px;">
+        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
     </select>
+    
+    <!-- Alle löschen -->
+    <button id="gallery-clear" class="toggle-btn">Alle löschen</button>
 
-    <input id="gallery-size" type="range" min="30" max="200" value="100" style="width:200px;">
+    <!-- Bildzoom -->
+    <label for="gallery-size" style="margin-left:20px; margin-right:6px;">Zoom:</label>
+    <input id="gallery-size" type="range" min="50" max="220" value="100" style="width:200px;">
 
-    <div id="gallery" style="margin-top:5px; display:grid; gap:0px;"></div>
+
+    <div id="gallery" style="margin-top:10px; display:grid; gap:6px;"></div>
 </div>
 
 <script>
@@ -282,6 +295,12 @@ function applyGalleryLayout() {
 
     document.querySelectorAll(".gallery-item img").forEach(img => {
         img.style.width = itemWidth + "px";
+    });
+
+    // Alle Bilder löschen
+    const galleryClear = document.getElementById("gallery-clear");
+    galleryClear.addEventListener("click", () => {
+        galleryDiv.innerHTML = "";
     });
 }
 
