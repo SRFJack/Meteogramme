@@ -236,7 +236,7 @@ function fillTimes() {
     const now = new Date();
     now.setUTCMinutes(0,0,0);
 
-    const offset = ["EURO1k","ICOND2"].includes(model) ? 3 : 5;
+    const offset = ["EURO1k","ICOND2","ICONCH2"].includes(model) ? 3 : 5;
     now.setUTCHours(Math.floor((now.getUTCHours() - offset) / 6) * 6);
 
     for (let i=0;i<5;i++){
